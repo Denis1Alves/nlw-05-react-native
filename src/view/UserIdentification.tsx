@@ -1,12 +1,12 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     StyleSheet, SafeAreaView, View, Text, TextInput,
     KeyboardAvoidingView, Platform, TouchableWithoutFeedback,
     Keyboard,
-    Alert
+    Alert, 
 } from "react-native";
 
 import { Button } from "../components/Button";
@@ -52,6 +52,18 @@ export function UserIdentification() {
         }
     }
 
+    useEffect(()=>{
+        async function userConfigurate(){
+            try {
+                const user = await AsyncStorage.getItem('@plantmanager:user');
+                if(user)
+                    navigation.navigate('PlantSelect');
+            } catch (error) {
+                Alert.alert('Não foi possível identificar o usuário');
+            }
+        }
+        userConfigurate();
+    },[])
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

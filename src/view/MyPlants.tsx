@@ -42,7 +42,10 @@ export function MyPlants() {
     useEffect(() => {
         async function loadStorageData() {
             const plantsStoraged = await loadPlant();
-
+            if(plantsStoraged.length <=0){
+                setLoading(false);
+                return;
+            }
             const nextTime = formatDistance(
                 new Date(plantsStoraged[0].dateTimeNotification).getTime(), 
                 new Date().getTime(),
@@ -50,7 +53,7 @@ export function MyPlants() {
             );
 
             setNextWatered(
-                `Não esqueça de regar a ${plantsStoraged[0].name} às ${nextTime}`
+                `Não esqueça de regar a ${plantsStoraged[0].name} à ${nextTime}`
             )
 
             setMyPlants(plantsStoraged);
@@ -66,18 +69,23 @@ export function MyPlants() {
     return (
         <View style={styles.container}>
             <Header />
+           
+                <View style={styles.spotlight}>
+                    <Image source={waterdrop} style={styles.spotlightImage}  />
 
-            <View style={styles.spotlight}>
-                <Image source={waterdrop} style={styles.spotlightImage}  />
-
-                <Text style={styles.spotlightText}>
-                    {nextWatered}
-                </Text>
-            </View>
-
+                    <Text style={styles.spotlightText}>
+                    {
+                        myPlants.length > 0 ? nextWatered : 'Parece que você ainda não salvou uma plantinha 😔'
+                    }
+                    </Text>
+                </View>
+           
             <View style={styles.plants}>
                 <Text style={styles.plantsTitle}>
-                    Próximas regadas
+                    
+                    {
+                        myPlants.length <= 0 ? 'Não há plantas cadastradas no momento' : 'Próximas regadas'
+                    }
                 </Text>
 
                 <FlatList data={myPlants} 
